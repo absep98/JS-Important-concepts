@@ -1,17 +1,15 @@
-function deepFreeze(obj, res = {}, freeze = false) {
+function deepFreeze(obj) {
     if (typeof obj !== 'object' || obj === null) {
         return obj;
     }
 
     Object.keys(obj).forEach((key) => {
-        res[key] = deepFreeze(obj[key], {}, freeze);
+        deepFreeze(obj[key]);
     });
 
-    if (freeze) {
-        Object.freeze(res);
-    }
+    Object.freeze(obj);
 
-    return res;
+    return obj;
 }
 
 const obj = {
@@ -27,18 +25,12 @@ const obj = {
     }
 };
 
-// Deep clone without freezing
-let ans = deepFreeze(obj);
-ans.d = 'aks';
-console.log(ans); // The cloned object should reflect the change
-console.log(obj); // The original object should remain unchanged
-
-// Deep clone with freezing
-let frozenAns = deepFreeze(obj, {}, true);
+// Deep freeze the object
+let frozenObj = deepFreeze(obj);
 try {
-    frozenAns.d = 'aks'; // This should throw an error in strict mode or fail silently in non-strict mode
+    frozenObj.d = 'aks'; // This should throw an error in strict mode or fail silently in non-strict mode
 } catch (e) {
     console.error(e);
 }
-console.log(frozenAns); // The cloned object should remain unchanged
+console.log(frozenObj); // The frozen object should remain unchanged
 console.log(obj); // The original object should remain unchanged
